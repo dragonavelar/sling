@@ -32,8 +32,7 @@ end
 
 function Ground:draw( screenmanager ) -- ::void!
 	local sm = screenmanager
---	love.graphics.setColor( 6, 162, 34 )
-	love.graphics.setColor( 162, 6, 34 )
+	love.graphics.setColor( 6, 162, 34 )
 	local x1, y1, 
 		x2, y2,
 		x3, y3,
