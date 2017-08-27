@@ -160,7 +160,8 @@ function Enemy:draw( screenmanager ) -- ::void!
 	elseif self.cooling then
 		love.graphics.setColor( 0, 0, 255 )
 	else
-		love.graphics.setColor( 222, 23, 222 )
+--		love.graphics.setColor( 222, 23, 222 )
+		love.graphics.setColor( 0, 0, 0 )
 	end
 	local x1, y1, 
 		x2, y2,
