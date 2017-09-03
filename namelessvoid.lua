@@ -2,7 +2,7 @@ local NamelessVoid = {}
 NamelessVoid.__index = NamelessVoid
 NamelessVoid.id = 'namelessvoid'
 
-function NamelessVoid.new() -- ::NamelessVoid
+function NamelessVoid.new(world) -- ::NamelessVoid
 	local self = setmetatable({},NamelessVoid)
 	local meter_width = 16 -- TODO read value
 	local meter_height = 9 -- TODO read value

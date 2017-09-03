@@ -1,7 +1,7 @@
 local Obj = {}
 Obj.__index = Obj
 
-function Obj.new() -- ::Obj
+function Obj.new(world) -- ::Obj
 	local self = setmetatable({},Obj)
 	local meter_width = love.graphics.getWidth() / onemeter -- TODO
 	local meter_height = love.graphics.getHeight() / onemeter -- TODO

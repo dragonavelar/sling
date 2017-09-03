@@ -16,7 +16,7 @@ Enemy.attacking_cooldown_period = 1.0
 
 Enemy.abducting_period = 0.3
 
-function Enemy.new( right ) -- ::Enemy
+function Enemy.new( world, right ) -- ::Enemy
 	local _right = right or false
 	local self = setmetatable({},Enemy)
 
@@ -140,7 +140,7 @@ function Enemy:update(dt) -- ::void!
 			sx = ( sx1 + sx2 + sx3 + sx4 ) / 4.0
 			sy = ( sy1 + sy2 + sy3 + sy4 ) / 4.0
 			if not self.raycasted then
-				world:rayCast( sx, sy, sx, sy + 100.0, self.raycast_callback ) -- TODO remove magic number
+				self.body:getWorld():rayCast( sx, sy, sx, sy + 100.0, self.raycast_callback ) -- TODO remove magic number
 			else
 				self.raycast_cooldown_time = self.raycast_cooldown_time + dt
 				while self.raycast_cooldown_time > self.raycast_cooldown_period do
@@ -197,8 +197,6 @@ function Enemy:collide( other, collision )
 	if collision then
 		if other.id == Pellet.id then
 			self.alive = false
-			score = score + 1
-			-- TODO take damage only
 		end
 	end
 end

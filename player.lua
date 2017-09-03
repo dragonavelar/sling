@@ -7,7 +7,7 @@ Player.sling_max_speed_gain = 8
 -- max speed = min speed + max speed gain
 Player.sling_charge_window = 0.8 -- seconds
 
-function Player.new() -- ::Player
+function Player.new(world) -- ::Player
 	local self = setmetatable({},Player)
 	local meter_height = 9 -- TODO get value
 	local body_height = 1.54
@@ -44,7 +44,7 @@ function Player:free()
 	self.body = nil
 end
 
-function Player:update( dt, screenmanager ) -- ::void!
+function Player:update( dt, screenmanager, pellets ) -- ::void!
 	local sm = screenmanager
 	local left, right = false, false
 	if not ANDROID_CONTROLS then
@@ -78,6 +78,7 @@ function Player:update( dt, screenmanager ) -- ::void!
 			self.charge_dir = 1
 			table.insert( pellets,
 				Pellet.new(
+					self.body:getWorld(),
 					-- TODO put above player
 					self.body:getX(),
 					self.body:getY(),

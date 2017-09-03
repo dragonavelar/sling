@@ -3,7 +3,7 @@ Pellet.__index = Pellet
 Pellet.id = 'pellet'
 Pellet.player_collisions_threshold = 2 -- Number of times it has to collide with a player to destroy itself
 
-function Pellet.new( _x, _y, _dx, _dy, _r ) -- ::Pellet
+function Pellet.new(world, _x, _y, _dx, _dy, _r ) -- ::Pellet
 	local self = setmetatable( {}, Pellet )
 	local meter_width = 16 -- TODO read value
 	local meter_height = 9 -- TODO read value

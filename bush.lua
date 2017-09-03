@@ -2,7 +2,7 @@ local Bush = {}
 Bush.__index = Bush
 Bush.id = 'bush'
 
-function Bush.new(x,y,width,height) -- ::Bush
+function Bush.new(world,x,y,width,height) -- ::Bush
 	local self = setmetatable({},Bush)
 	self.body = love.physics.newBody( world,
 		x, y, "static" )
@@ -57,7 +57,7 @@ function Bush:update(dt, screenmanager) -- ::void!
 	end
 end
 
-function Bush:draw() -- ::void!
+function Bush:draw(screenmanager) -- ::void!
 	local sm = screenmanager
 	love.graphics.setColor(0,100,0)
 	local x1, y1, 

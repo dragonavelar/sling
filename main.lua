@@ -1,9 +1,3 @@
-ANDROID_CONTROLS = false
-local debug = false
-
-local acc, fps, show_fps, old_time = 0, 0, 0, 0
-local enemy_spawn_threshold, enemy_spawn_acc
-
 Bush = require('bush')
 Player = require('player')
 Ground = require('ground')
@@ -12,77 +6,39 @@ Enemy = require('enemy')
 Collisions = require('collisions')
 NamelessVoid = require('namelessvoid')
 ScreenManager = require('screenmanager')
+Auxiliary = require('auxiliary')
+Menu = require('menu')
+Ingame = require('ingame')
 
-world = nil
-screenmanager = nil
-score = nil
+ANDROID_CONTROLS = false
+
+local acc, fps, show_fps, old_time = 0, 0, 0, 0
+local main_debug = true
+
+local screenmanager = nil
 
 function love.load()
 	love.graphics.setBackgroundColor( 240, 108, 21 )
-
 	love.physics.setMeter( 1 )
-	world = love.physics.newWorld( 0, 9.8 )
-	world:setCallbacks(
-		Collisions.beginContact,
-		Collisions.endContact,
-		Collisions.preSolve,
-		Collisions.postSolve )
-
 	screenmanager = ScreenManager.new()
-	score = 0
-
-	namelessvoid = NamelessVoid.new()
-	player = Player.new()
-	ground = Ground.new()
-	pellets = {}
-	enemies = {}
-	enemy_spawn_threshold = 2
-	enemy_spawn_acc = 0.0
-	table.insert( enemies, Enemy.new() )
-	local meter_width = 16 -- TODO get value
-	local meter_height = 9 -- TODO get value
-	local bush_height = 1.2
-	local bushl_width = 1.4
-	local bushr_width = 2.2
-	local bush_x_offset = 1.2
-	local bush_y = meter_height - 1 - ( bush_height / 2 )
-	bushl = Bush.new( bush_x_offset + bushl_width, bush_y, bushl_width, bush_height )
-	bushr = Bush.new( meter_width - bush_x_offset - bushr_width, bush_y, bushr_width, bush_height )
+	screenmanager:update( dt )
+	state = Menu.new()
 end
 
 function love.update( dt )
 	if main_debug and dt > 1/1000 then
 		print( 'high dt', dt )
 	end
-	player:update( dt, screenmanager )
-	world:update( dt )
-	for k, v in pairs( pellets ) do
-		if v.alive then
-			v:update( dt )
-		else
-			v:free()
-			pellets[ k ] = nil
-		end
+	local new_state = state:update( dt, screenmanager )
+	if new_state ~= nil and new_state then
+		s = state:transition( new_state )
+		state = nil
+		state = s
+  elseif new_state == false then
+    state:free()
+    state = nil
+    love.event.push('quit')
 	end
-	for k, v in pairs( enemies ) do
-		if v.alive then
-			v:update( dt )
-		else
-			v:free()
-			enemies[ k ] = nil
-		end
-	end
-	enemy_spawn_acc = enemy_spawn_acc + dt
-	if enemy_spawn_acc > enemy_spawn_threshold then
-		enemy_spawn_acc = enemy_spawn_acc - enemy_spawn_threshold
-		local spawn_right = false
-		if math.random() > 0.5 then spawn_right = true end
-		table.insert( enemies, Enemy.new( spawn_right ) )
-	end
-	
-	bushl:update( dt, screenmanager )
-	bushr:update( dt, screenmanager )
-
 	update_fps( dt )
 end
 
@@ -97,55 +53,10 @@ function update_fps( dt )
 end
 
 function love.draw()
-	local layers = {}
-	for kl, vl in pairs( ScreenManager.layers ) do
-		layers[vl] = {}
-		if bushl.layer ~= nil and bushl.layer == vl then
-			table.insert( layers[vl], bushl )
-		end
-		if bushr.layer ~= nil  and bushr.layer == vl then
-			table.insert( layers[vl], bushr )
-		end
-		if player.layer ~= nil  and player.layer == vl then
-			table.insert( layers[vl], player )
-		end
-		if player.layer ~= nil  and player.layer == vl then
-			table.insert( layers[vl], player )
-		end
-		if ground.layer ~= nil  and ground.layer == vl then
-			table.insert( layers[vl], ground )
-		end
-		for kp, vp in pairs( pellets ) do
-			if vp.layer ~= nil  and vp.layer == vl then
-				table.insert( layers[vl], vp )
-			end
-		end
-		for ke, ve in pairs( enemies ) do
-			if ve.layer ~= nil  and ve.layer == vl then
-				table.insert( layers[vl], ve )
-			end
-		end
-	end
-	
-	
-	for i = #layers, 1, -1 do
-		for ko, vo in pairs( layers[i] ) do
-			vo:draw( screenmanager )
-		end
-	end
-	-- Garbage collect?
-	for i = #layers, 1, -1 do
-		for ko, vo in pairs( layers[i] ) do
-			layers[i][vo] = nil
-		end
-		layers[i] = nil
-	end
-	layers = nil
-
+	state:draw( screenmanager )
 	screenmanager:update( dt )
 	screenmanager:draw()
 	draw_fps()
-	draw_score()
 end
 
 function draw_fps()
@@ -165,11 +76,11 @@ function draw_fps()
 end
 
 
-function draw_score()
-	love.graphics.setColor( 255, 255, 255 )
-	love.graphics.print( string.format( "%d", score),
-		screenmanager.px_w * 0.5, 0 )
-end
+
+
+
+
+
 
 
 

@@ -2,7 +2,7 @@ local Ground = {}
 Ground.__index = Ground
 Ground.id = 'ground'
 
-function Ground.new() -- ::Ground
+function Ground.new(world) -- ::Ground
 	local self = setmetatable({},Ground)
 	local meter_width = 16 -- TODO read value
 	local meter_height = 9 -- TODO read value
